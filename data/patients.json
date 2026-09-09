@@ -1,0 +1,42 @@
+[
+    {
+        "address": "7 Gandhi Road, Noida",
+        "age": 24,
+        "bloodGroup": "B+",
+        "condition": "High fever",
+        "gender": "MALE",
+        "id": 3,
+        "name": "Rahul Kumar",
+        "phone": [
+            "9812345678"
+        ],
+        "priority": "LOW"
+    },
+    {
+        "address": "42 Park Avenue, Ghaziabad",
+        "age": 62,
+        "bloodGroup": "A-",
+        "condition": "Severe chest pain",
+        "gender": "MALE",
+        "id": 2,
+        "name": "Jane Smith",
+        "phone": [
+            "9988776655"
+        ],
+        "priority": "LOW"
+    },
+    {
+        "address": "12 Main Street, Delhi",
+        "age": 35,
+        "bloodGroup": "O+",
+        "condition": "Fractured arm",
+        "gender": "MALE",
+        "id": 1,
+        "name": "John Doe",
+        "phone": [
+            "9876543210",
+            "9123456780"
+        ],
+        "priority": "LOW"
+    }
+]
