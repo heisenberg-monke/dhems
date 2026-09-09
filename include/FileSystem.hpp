@@ -43,12 +43,16 @@ namespace dhems
         }
 
         template <Data T>
-        inline void insert(std::unique_ptr<T> x)
+        inline uint64_t insert(std::unique_ptr<T> x)
         {
             if(!x)
                 throw std::runtime_error("FileSystem::insert: Corrupted value");
+        
+            uint64_t id = x->id;
+            
+            m_data[typeid(T)][id] = std::move(x);
 
-            m_data[typeid(T)][x->id] = std::move(x);
+            return id;
         }
 
         template <Data T>
@@ -118,8 +122,8 @@ namespace dhems
         }
 
         template <Data T>
-        inline void load(const std::string &body) {
-            insert(std::make_unique<T>(nlohmann::json::parse(body).get<T>()));
+        inline uint64_t load(const std::string &body) {
+            return insert(std::make_unique<T>(nlohmann::json::parse(body).get<T>()));
         }
 
         template <Data T>

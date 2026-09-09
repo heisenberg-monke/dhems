@@ -46,7 +46,6 @@ namespace dhems
             {"address",     address},
             {"bloodGroup",  bloodGroup},
             {"condition",   condition},
-            {"condition",   condition},
             {"priority",    priority},
             {"gender",      gender},
             {"age",         age}

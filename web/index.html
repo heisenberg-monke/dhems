@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHEMS</title>
+</head>
+
+<body>
+    <h1>Add Patient</h1>
+
+    <form id="patient-form">
+        <div>
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" required>
+        </div>
+
+        <div>
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="text" required>
+        </div>
+
+        <div>
+            <label for="address">Address</label>
+            <input id="address" name="address" type="text" required>
+        </div>
+
+        <div>
+            <label for="bloodGroup">Blood Group</label>
+            <input id="bloodGroup" name="bloodGroup" type="text" required>
+        </div>
+
+        <div>
+            <label for="condition">Condition</label>
+            <input id="condition" name="condition" type="text" required>
+        </div>
+
+        <div>
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="SEVERE">Severe</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender">
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="age">Age</label>
+            <input id="age" name="age" type="number" min="0" required>
+        </div>
+
+        <br>
+
+        <button type="submit">Add Patient</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script src="/app.js"></script>
+</body>
+</html>
