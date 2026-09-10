@@ -1,4 +1,5 @@
 #include "Patient.hpp"
+#include <nlohmann/detail/macro_scope.hpp>
 
 namespace dhems
 {
@@ -16,6 +17,12 @@ namespace dhems
         {Gender::FEMALE, "FEMALE"}
     })
 
+    NLOHMANN_JSON_SERIALIZE_ENUM(VisitType,
+    {
+        {VisitType::ADMISSION, "ADMISSION"},
+        {VisitType::APPOINTMENT, "APPOINTMENT"}
+    })
+
     void Patient::load(const nlohmann::json &j)
     {
         auto it = j.find("id");
@@ -31,6 +38,7 @@ namespace dhems
         address       = j.at("address").get<std::string>();
         bloodGroup    = j.at("bloodGroup").get<std::string>();
         condition     = j.at("condition").get<std::string>();
+        type          = j.at("type").get<VisitType>();
         priority      = j.at("priority").get<PatientPriority>();
         gender        = j.at("gender").get<Gender>();
         age           = j.at("age").get<int>();
@@ -46,6 +54,7 @@ namespace dhems
             {"address",     address},
             {"bloodGroup",  bloodGroup},
             {"condition",   condition},
+            {"type",        type},
             {"priority",    priority},
             {"gender",      gender},
             {"age",         age}

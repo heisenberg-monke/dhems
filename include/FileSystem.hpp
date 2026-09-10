@@ -43,16 +43,17 @@ namespace dhems
         }
 
         template <Data T>
-        inline uint64_t insert(std::unique_ptr<T> x)
+        inline T *insert(std::unique_ptr<T> x)
         {
             if(!x)
                 throw std::runtime_error("FileSystem::insert: Corrupted value");
         
+            T *ptr = x.get();
             uint64_t id = x->id;
             
             m_data[typeid(T)][id] = std::move(x);
 
-            return id;
+            return ptr;
         }
 
         template <Data T>
@@ -68,7 +69,7 @@ namespace dhems
         }
 
         template <Data T>
-        inline T &find(size_t id)
+        inline T &find(uint64_t id)
         {
             auto typeIt = m_data.find(typeid(T));
 
@@ -84,7 +85,7 @@ namespace dhems
         }
 
         template <Data T>
-        inline const T &find(size_t id) const
+        inline const T &find(uint64_t id) const
         {
             auto typeIt = m_data.find(typeid(T));
 
@@ -119,11 +120,6 @@ namespace dhems
                 throw std::runtime_error("FileSystem::get: No such struct in the filesystem.");
 
             return typeIt->second;
-        }
-
-        template <Data T>
-        inline uint64_t load(const std::string &body) {
-            return insert(std::make_unique<T>(nlohmann::json::parse(body).get<T>()));
         }
 
         template <Data T>

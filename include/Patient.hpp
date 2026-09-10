@@ -21,6 +21,12 @@ namespace dhems
         SEVERE
     };
 
+    enum class VisitType
+    {
+        APPOINTMENT,
+        ADMISSION
+    };
+
     class Patient :  public HospitalData
     {
     public:
@@ -30,10 +36,22 @@ namespace dhems
         std::string bloodGroup;
         std::string condition;
         PatientPriority priority;
+        VisitType type;
         Gender gender;
         int age;
 
         void load(const nlohmann::json &j) override;
         void save(nlohmann::json &j) const override;
+    };
+
+    struct PatientComparator
+    {
+        bool operator()(const Patient *a, const Patient *b) const 
+        {
+            if(a->priority != b->priority)
+                return a->priority < b->priority;
+
+            return a->id > b->id;
+        }
     };
 }
