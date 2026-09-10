@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHEMS - Register Patient</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+<header>
+    <h1>DHEMS</h1>
+    <nav>
+        <a class="active" href="/register.html">Register</a>
+        <a href="/update.html">Update</a>
+        <a href="/display.html">Display</a>
+        <a href="/next.html">Next Patient</a>
+    </nav>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Register Patient</h2>
+        <p class="description">
+            Add a new patient to the patient manager.
+        </p>
+
+        <form id="register-form">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input id="name" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="age">Age</label>
+                    <input id="age" type="number" min="0" required>
+                </div>
+
+                <div class="field">
+                    <label for="phone">Phone</label>
+                    <input id="phone" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" required>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="address">Address</label>
+                    <input id="address" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="bloodGroup">Blood Group</label>
+                    <input id="bloodGroup" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="condition">Condition</label>
+                    <input id="condition" type="text" required>
+                </div>
+
+                <div class="field">
+                    <label for="priority">Priority</label>
+                    <select id="priority" required>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                        <option value="SEVERE">Severe</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="type">Visit Type</label>
+                    <select id="type" required>
+                        <option value="APPOINTMENT">Appointment</option>
+                        <option value="ADMISSION">Admission</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit">Register Patient</button>
+        </form>
+
+        <div id="message"></div>
+    </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DHEMS - Display Patient</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>DHEMS</h1>
+        <nav>
+            <a href="patient-manager/register.html">Register</a>
+            <a href="patient-manager/update.html">Update</a>
+            <a class="active" href="patient-manager/display.html">Display</a>
+            <a href="patient-manager/next.html">Next Patient</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Display Patient</h2>
+            <p class="description">
+                Enter a patient ID to retrieve the patient's information.
+            </p>
+            <form id="display-form">
+                <div class="field">
+                    <label for="patient-id">Patient ID</label>
+                    <input id="patient-id" type="number" min="1" required />
+                </div>
+                <button type="submit">Display Patient</button>
+            </form>
+            <div id="message"></div>
+
+            <div id="patient-result" class="patient-result hidden">
+                <h3>Patient Information</h3>
+
+                <div class="patient-grid">
+                    <div>
+                        <span>ID</span>
+                        <strong id="display-id"></strong>
+                    </div>
+
+                    <div>
+                        <span>Name</span>
+                        <strong id="display-name"></strong>
+                    </div>
+
+                    <div>
+                        <span>Age</span>
+                        <strong id="display-age"></strong>
+                    </div>
+
+                    <div>
+                        <span>Gender</span>
+                        <strong id="display-gender"></strong>
+                    </div>
+
+                    <div>
+                        <span>Phone</span>
+                        <strong id="display-phone"></strong>
+                    </div>
+
+                    <div>
+                        <span>Blood Group</span>
+                        <strong id="display-blood"></strong>
+                    </div>
+
+                    <div>
+                        <span>Priority</span>
+                        <strong id="display-priority"></strong>
+                    </div>
+
+                    <div>
+                        <span>Visit Type</span>
+                        <strong id="display-type"></strong>
+                    </div>
+
+                    <div class="full">
+                        <span>Address</span>
+                        <strong id="display-address"></strong>
+                    </div>
+
+                    <div class="full">
+                        <span>Condition</span>
+                        <strong id="display-condition"></strong>
+                    </div>
+                </div>
+
+                <h3>JSON</h3>
+                <pre id="display-json"></pre>
+            </div>
+        </section>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+
+</html>

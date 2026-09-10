@@ -16,8 +16,8 @@ namespace dhems
 
         bool debugEnabled();
         void setDebug(bool debug);
-
-        #define LOG_INFO if(dhems::Logger::debugEnabled()) dhems::Logger::info()
-        #define LOG_WARN if(dhems::Logger::debugEnabled()) dhems::Logger::warn()
     }
 }
+
+#define LOG_INFO if(dhems::Logger::debugEnabled()) dhems::Logger::info()
+#define LOG_WARN if(dhems::Logger::debugEnabled()) dhems::Logger::warn()

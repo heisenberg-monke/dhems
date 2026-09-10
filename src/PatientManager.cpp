@@ -8,7 +8,7 @@ namespace dhems
         return FileSystem::fs().insert(std::make_unique<Patient>(nlohmann::json::parse(body).get<Patient>()));
     }
 
-    void PatientManager::registerPatient(const std::string &body)
+    Patient *PatientManager::registerResource(const std::string &body)
     {
         auto *patient = createPatient(body);
 
@@ -17,20 +17,9 @@ namespace dhems
 
         else
             m_priority.emplace(patient);
+
+        return patient;
     }
-
-    void PatientManager::updatePatient(uint64_t id, const std::string &body)
-    {
-        auto &patient = FileSystem::fs().find<Patient>(id);
-
-        patient = nlohmann::json::parse(body).get<Patient>();
-    }
-
-    void PatientManager::exportPatient(uint64_t id, std::string &buffer) const
-    {
-        nlohmann::json j = FileSystem::fs().find<Patient>(id);
-        buffer = j.dump();
-    };
 
     Patient *PatientManager::nextPatient(VisitType type)
     {

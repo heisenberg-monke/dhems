@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DHEMS - Next Patient</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>DHEMS</h1>
+        <nav>
+            <a href="patient-manager/register.html">Register</a>
+            <a href="patient-manager/update.html">Update</a>
+            <a href="patient-manager/display.html">Display</a>
+            <a class="active" href="patient-manager/next.html">Next Patient</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Handle Next Patient</h2>
+
+            <p class="description">
+                Select which queue should provide the next patient.
+            </p>
+
+            <div class="next-actions">
+                <button id="next-appointment">Next Appointment</button>
+
+                <button id="next-admission" class="danger">Next Admission</button>
+            </div>
+
+            <div id="message"></div>
+
+            <div id="next-patient" class="patient-result hidden">
+                <h3>Patient to Handle</h3>
+
+                <div class="patient-grid">
+                    <div>
+                        <span>ID</span>
+                        <strong id="next-id"></strong>
+                    </div>
+
+                    <div>
+                        <span>Name</span>
+                        <strong id="next-name"></strong>
+                    </div>
+
+                    <div>
+                        <span>Age</span>
+                        <strong id="next-age"></strong>
+                    </div>
+
+                    <div>
+                        <span>Gender</span>
+                        <strong id="next-gender"></strong>
+                    </div>
+
+                    <div>
+                        <span>Phone</span>
+                        <strong id="next-phone"></strong>
+                    </div>
+
+                    <div>
+                        <span>Blood Group</span>
+                        <strong id="next-blood"></strong>
+                    </div>
+
+                    <div>
+                        <span>Priority</span>
+                        <strong id="next-priority"></strong>
+                    </div>
+
+                    <div>
+                        <span>Visit Type</span>
+                        <strong id="next-type"></strong>
+                    </div>
+
+                    <div class="full">
+                        <span>Address</span>
+                        <strong id="next-address"></strong>
+                    </div>
+
+                    <div class="full">
+                        <span>Condition</span>
+                        <strong id="next-condition"></strong>
+                    </div>
+                </div>
+
+                <h3>JSON</h3>
+                <pre id="next-json"></pre>
+            </div>
+        </section>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+
+</html>
