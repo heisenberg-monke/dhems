@@ -4,12 +4,6 @@
 #include "Patient.hpp"
 #include "PatientManager.hpp"
 
-#include "cpp-httplib/httplib.h"
-
-#include <csignal>
-#include <filesystem>
-#include <stdexcept>
-
 namespace dhems
 {
     static constexpr const char *WEB_DIR       = "web";

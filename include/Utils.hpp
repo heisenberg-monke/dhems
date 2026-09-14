@@ -1,7 +1,5 @@
 #pragma once
 
-#include <nlohmann/json.hpp>
-
 template <typename T>
 concept Enum = std::is_enum_v<T>;
 

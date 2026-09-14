@@ -1,6 +1,5 @@
 #include "PatientManager.hpp"
 #include "FileSystem.hpp"
-#include <stdexcept>
 
 namespace dhems
 {

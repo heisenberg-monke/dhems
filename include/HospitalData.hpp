@@ -1,14 +1,5 @@
 #pragma once
 
-#include <concepts>
-#include <cstdint>
-
-#include <memory>
-
-#include <unordered_map>
-
-#include <nlohmann/json.hpp>
-
 namespace dhems
 {
     class HospitalData

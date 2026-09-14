@@ -22,8 +22,22 @@ namespace dhems
         void save(nlohmann::json &j) const override;
     };
 
-    class TimeTable;
-    
+    class DoctorTimeSlot : public HospitalData
+    {
+    public:
+        bool available = false;
+
+        inline void load(const nlohmann::json &j) override {
+            available = j.at("available").get<bool>();
+        }
+
+        inline void save(nlohmann::json &j) const override {
+            j = {
+                {"available", available}
+            };
+        }
+    };
+
     class Doctor : public HospitalData
     {
     public:
@@ -31,7 +45,7 @@ namespace dhems
         std::string experience;
         std::vector<uint64_t> specialization;
         std::vector<std::string> phone;
-        TimeTable table;
+        TimeTable<DoctorTimeSlot> timeTable;
         uint64_t department;
 
         void load(const nlohmann::json &j) override;

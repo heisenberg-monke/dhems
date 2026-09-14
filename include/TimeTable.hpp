@@ -2,9 +2,6 @@
 
 #include "HospitalData.hpp"
 
-#include <array>
-#include <optional>
-
 namespace dhems
 {
     enum class Day
@@ -30,7 +27,7 @@ namespace dhems
             assert(0 <= time && time <= 24);
             assert(0 <= dayIndex && dayIndex <= 7);
 
-            return dayIndex * 7 + time;
+            return dayIndex * 24 + time;
         }
 
     public:

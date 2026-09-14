@@ -2,9 +2,6 @@
 
 #include "HospitalData.hpp"
 
-#include <string>
-#include <vector>
-
 namespace dhems
 {
     enum class Gender

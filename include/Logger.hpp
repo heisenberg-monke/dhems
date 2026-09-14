@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 namespace dhems
 {
     namespace Logger

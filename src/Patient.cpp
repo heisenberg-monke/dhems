@@ -1,5 +1,4 @@
 #include "Patient.hpp"
-#include <nlohmann/detail/macro_scope.hpp>
 
 namespace dhems
 {
@@ -42,6 +41,8 @@ namespace dhems
         priority      = j.at("priority").get<PatientPriority>();
         gender        = j.at("gender").get<Gender>();
         age           = j.at("age").get<int>();
+
+        std::cout << "I'm gonna put some dirt in your eye.\n";
     }
 
     void Patient::save(nlohmann::json &j) const

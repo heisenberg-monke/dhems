@@ -1,7 +1,5 @@
 #pragma once
 
-#include <queue>
-
 #include "ResourceManager.hpp"
 #include "Patient.hpp"
 
