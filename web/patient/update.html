@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Update Patient - DHEMS</title>
+
+    <link rel="stylesheet" href="/patient/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Update Patient</h1>
+</header>
+
+<main>
+
+    <form id="update-form">
+
+        <label>
+            Patient ID
+            <input type="number" id="patient-id" required>
+        </label>
+
+        <label>
+            Name
+            <input type="text" name="name" required>
+        </label>
+
+        <label>
+            Phone
+            <input type="text" name="phone" required>
+        </label>
+
+        <label>
+            Address
+            <textarea name="address" required></textarea>
+        </label>
+
+        <label>
+            Blood Group
+            <input type="text" name="bloodGroup" required>
+        </label>
+
+        <label>
+            Condition
+            <input type="text" name="condition" required>
+        </label>
+
+        <label>
+            Visit Type
+            <select name="type">
+                <option value="APPOINTMENT">Appointment</option>
+                <option value="ADMISSION">Admission</option>
+            </select>
+        </label>
+
+        <label>
+            Priority
+            <select name="priority">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="SEVERE">Severe</option>
+            </select>
+        </label>
+
+        <label>
+            Gender
+            <select name="gender">
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+            </select>
+        </label>
+
+        <label>
+            Age
+            <input type="number" name="age" min="0" required>
+        </label>
+
+        <button type="submit">Update Patient</button>
+
+    </form>
+
+    <p id="message"></p>
+
+</main>
+
+<script src="/patient/patient.js"></script>
+
+<script>
+document
+    .getElementById("update-form")
+    .addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const form = event.target;
+        const id = document.getElementById("patient-id").value;
+
+        const data = new FormData(form);
+        const patient = Object.fromEntries(data.entries());
+
+        patient.id = Number(id);
+        patient.age = Number(patient.age);
+        patient.phone = [patient.phone];
+
+        const result = await PatientAPI.update(id, patient);
+
+        const message = document.getElementById("message");
+
+        if (result.success) {
+            message.className = "success";
+            message.textContent = "Patient updated.";
+        }
+        else {
+            message.className = "error";
+            message.textContent = result.error;
+        }
+    });
+</script>
+
+</body>
+</html>

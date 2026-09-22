@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient - DHEMS</title>
+
+    <link rel="stylesheet" href="/patient/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Patient</h1>
+</header>
+
+<main>
+
+    <div class="card">
+        <pre id="patient">Loading...</pre>
+    </div>
+
+</main>
+
+<script src="/patient/patient.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+const output = document.getElementById("patient");
+
+if (!id) {
+    output.textContent = "No patient ID provided.";
+}
+else {
+    PatientAPI.get(id)
+        .then(result => {
+            if (result.success === false) {
+                output.textContent = result.error;
+                return;
+            }
+
+            output.textContent =
+                JSON.stringify(result, null, 4);
+        })
+        .catch(error => {
+            output.textContent = error.message;
+        });
+}
+</script>
+
+</body>
+</html>

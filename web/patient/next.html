@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Next Patient - DHEMS</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Next Patient</h1>
+</header>
+
+<main>
+
+    <div class="actions">
+        <button id="appointment">
+            Next Appointment
+        </button>
+
+        <button id="admission">
+            Next Admission
+        </button>
+    </div>
+
+    <div class="card">
+        <pre id="patient"></pre>
+    </div>
+
+</main>
+
+<script src="patient.js"></script>
+
+<script>
+const output = document.getElementById("patient");
+
+async function getNext(type)
+{
+    output.textContent = "Loading...";
+
+    try
+    {
+        const result = await PatientAPI.next(type);
+
+        if (result.success === false)
+        {
+            output.textContent = result.error;
+            return;
+        }
+
+        output.textContent =
+            JSON.stringify(result, null, 4);
+    }
+    catch (error)
+    {
+        output.textContent = error.message;
+    }
+}
+
+document
+    .getElementById("appointment")
+    .addEventListener(
+        "click",
+        () => getNext("APPOINTMENT")
+    );
+
+document
+    .getElementById("admission")
+    .addEventListener(
+        "click",
+        () => getNext("ADMISSION")
+    );
+</script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patients - DHEMS</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Patient Management</h1>
+</header>
+
+<main>
+
+    <section class="actions">
+
+        <a href="register.html">
+            <button type="button">Register Patient</button>
+        </a>
+
+        <button type="button" id="view-patient">
+            View Patient
+        </button>
+
+        <a href="update.html">
+            <button type="button">Update Patient</button>
+        </a>
+
+        <a href="next.html">
+            <button type="button">Next Patient</button>
+        </a>
+
+    </section>
+
+</main>
+
+<script src="patient.js"></script>
+
+<script>
+document
+    .getElementById("view-patient")
+    .addEventListener("click", () => {
+
+        const id = prompt("Enter patient ID:");
+
+        if (!id)
+            return;
+
+        window.location.href =
+            `display.html?id=${encodeURIComponent(id)}`;
+    });
+</script>
+
+</body>
+</html>

@@ -17,7 +17,9 @@
 #include <memory>
 #include <concepts>
 #include <optional>
+#include <algorithm>
 
+#include <chrono>
 #include <typeindex>
 #include <filesystem>
 
