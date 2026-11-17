@@ -254,11 +254,38 @@ namespace dhems
         });
     }
 
-    void App::run(const std::string& address, int port)
+    void App::serveAmbulances(httplib::Server& server)
+    {
+        server.Get("/api/city-map", [this](const httplib::Request&, httplib::Response& response) {
+            response.set_content(cityMap.toJSON().dump(), "application/json");
+        });
+
+        server.Post("/api/ambulance", [this](const httplib::Request& request, httplib::Response& response) {
+            try {
+                const auto body = nlohmann::json::parse(request.body);
+                const auto destinationId = body.at("locationId").get<uint64_t>();
+                const auto route = cityMap.findRoute(destinationId);
+                nlohmann::json routeNodes = nlohmann::json::array();
+                for (const auto& node : route.nodes)
+                    routeNodes.push_back({{"id", node.id}, {"name", node.name}, {"x", node.x}, {"y", node.y}});
+
+                response.set_content(nlohmann::json{
+                    {"hospital", {{"id", cityMap.hospital().id}, {"name", cityMap.hospital().name}}},
+                    {"destination", {{"id", route.nodes.back().id}, {"name", route.nodes.back().name}}},
+                    {"distance", route.distance}, {"route", std::move(routeNodes)}
+                }.dump(), "application/json");
+            } catch (const std::exception& error) { serveError(response, 400, error.what()); }
+        });
+    }
+
+    void App::run(const std::string& address, int port, uint64_t seed)
     {
         FileSystem& fileSystem = FileSystem::getInstance();
         const auto patientFile = DATA_DIR / "patients.json";
         const auto doctorFile = DATA_DIR / "doctors.json";
+        const auto cityMapFile = DATA_DIR / "city_map.json";
+
+        cityMap.load(cityMapFile, seed);
 
         if (std::filesystem::exists(patientFile)) 
             fileSystem.loadAll<Patient>(patientFile);
@@ -287,6 +314,7 @@ namespace dhems
 
         servePatients(server, fileSystem, nextId);
         serveDoctors(server, nextDoctorId);
+        serveAmbulances(server);
 
         server.Get("/", [](const httplib::Request&, httplib::Response& response) {
             response.set_file_content((WEB_DIR / "dhems/index.html").string());

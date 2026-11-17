@@ -3,6 +3,7 @@
 #include "dhems/managers/PatientManager.hpp"
 #include "dhems/managers/DoctorManager.hpp"
 #include "dhems/FileSystem.hpp"
+#include "dhems/navigation/CityMap.hpp"
 
 namespace dhems
 {
@@ -14,12 +15,14 @@ namespace dhems
         
         PatientManager patientManager;
         DoctorManager doctorManager;
+        CityMap cityMap;
 
         void serveError(httplib::Response& response, int status, const std::string& message) const;
         void servePatients(httplib::Server& server, FileSystem& fileSystem, uint64_t& nextId);
         void serveDoctors(httplib::Server& server, uint64_t& nextDoctorId);
+        void serveAmbulances(httplib::Server& server);
 
     public:
-        void run(const std::string& address, int port);
+        void run(const std::string& address, int port, uint64_t seed);
     };
 }
