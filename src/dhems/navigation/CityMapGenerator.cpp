@@ -30,6 +30,13 @@ namespace dhems
                 if (r + 1 < cfg_.rows) candidateEdges.emplace_back(idx(r,c), idx(r+1,c)); // vertical
                 if (r + 1 < cfg_.rows && c + 1 < cfg_.cols && bernoulli(cfg_.diagonalProb))
                     candidateEdges.emplace_back(idx(r,c), idx(r+1,c+1));                 // diagonal
+                // Longer links represent wider avenues between neighborhoods.
+                if (c + 2 < cfg_.cols && bernoulli(0.16))
+                    candidateEdges.emplace_back(idx(r,c), idx(r,c+2));
+                if (r + 2 < cfg_.rows && bernoulli(0.16))
+                    candidateEdges.emplace_back(idx(r,c), idx(r+2,c));
+                if (r + 1 < cfg_.rows && c > 0 && bernoulli(0.05))
+                    candidateEdges.emplace_back(idx(r,c), idx(r+1,c-1));
             }
         }
 
@@ -74,15 +81,9 @@ namespace dhems
                 roads.emplace_back(u,v);
         }
 
-        // 5. Hospital = most central node
-        uint64_t hospitalId = 1;
-        double best = 1e9;
-        for (const auto& n : nodes)
-        {
-            int r = (n.id-1) / cfg_.cols, c = (n.id-1) % cfg_.cols;
-            double d = std::hypot(r-centerR, c-centerC);
-            if (d < best) { best = d; hospitalId = n.id; }
-        }
+        // The hospital can be anywhere; retain its node ID in the map data.
+        const uint64_t hospitalId = std::uniform_int_distribution<uint64_t>(1, N)(rng_);
+        nodes[hospitalId - 1].name = "DHEMS General Hospital";
 
         // 6. Build JSON
         nlohmann::json j;
@@ -109,19 +110,17 @@ namespace dhems
     std::string CityMapGenerator::makeName(int r, int c)
     {
         // Simple but city-feeling names; you can expand the tables
-        static const char* rows[] = {"North","Hill","Central","Garden","South","Riverside","Airport"};
         static const char* cols[] = {"Gate","Clinic","Market","Park","Heights","Homes","Square","Museum","Hall","Transit"};
         static const char* specials[] = {"University","Stadium","City Hall","General Hospital","East Riverside","West Market"};
-
-        if (r == cfg_.rows/2 && c == cfg_.cols/2)
-            return "DHEMS General Hospital";
 
         // a few special names
         if (bernoulli(0.12))
             return specials[static_cast<size_t>(uniform(0, std::size(specials)))];
 
-        std::string rowName = rows[std::min(r, static_cast<int>(std::size(rows))-1)];
-        std::string colName = cols[std::min(c, static_cast<int>(std::size(cols))-1)];
-        return rowName + " " + colName;
+        static const char* districts[] = {"Northbank", "Maplewood", "Old Town", "Midtown", "Riverside", "Southside", "East End"};
+        const size_t district = std::min(static_cast<size_t>(r) * std::size(districts) / cfg_.rows,
+                                         std::size(districts) - 1);
+        const std::string street = cols[static_cast<size_t>(c) % std::size(cols)];
+        return std::string(districts[district]) + " " + street + " " + std::to_string(r + 1) + "-" + std::to_string(c + 1);
     }
 }

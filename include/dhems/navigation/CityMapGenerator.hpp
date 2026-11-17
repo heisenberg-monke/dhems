@@ -9,12 +9,12 @@ namespace dhems
     public:
         struct Config
         {
-            int rows           = 7;
-            int cols           = 7;
-            double cellSize    = 150.0;
-            double jitter      = 18.0;
-            double extraEdgeProb = 0.28;
-            double diagonalProb  = 0.08;
+            int rows           = 21;
+            int cols           = 21;
+            double cellSize    = 95.0;
+            double jitter      = 24.0;
+            double extraEdgeProb = 0.38;
+            double diagonalProb  = 0.16;
             uint64_t seed      = 42;
         };
 

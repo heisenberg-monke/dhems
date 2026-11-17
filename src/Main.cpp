@@ -2,11 +2,14 @@
 
 #include "utils/Utils.hpp"
 
+#include <chrono>
+
 int main(int argc, char** argv)
 {
     try {
         dhems::App app;
-        uint64_t seed = 42;
+        uint64_t seed = static_cast<uint64_t>(
+            std::chrono::system_clock::now().time_since_epoch().count());
 
         for(int i = 1; i < argc; ++i)
         {   

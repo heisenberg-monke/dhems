@@ -15,7 +15,6 @@ namespace dhems
         
         PatientManager patientManager;
         DoctorManager doctorManager;
-        CityMap cityMap;
 
         void serveError(httplib::Response& response, int status, const std::string& message) const;
         void servePatients(httplib::Server& server, FileSystem& fileSystem, uint64_t& nextId);

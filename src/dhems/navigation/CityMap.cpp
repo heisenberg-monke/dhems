@@ -21,18 +21,18 @@ namespace dhems
         }
     }
 
-    void CityMap::load(const std::filesystem::path& path, uint64_t seed)
+    void CityMap::generate(uint64_t seed)
     {
-        std::ifstream file(path);
-        if (!file) throw std::runtime_error("Could not open city map: " + path.string());
-
-        auto json = nlohmann::json::parse(file);
-        const auto fileSeed = json.at("seed").get<uint64_t>();
-
-        if (fileSeed != seed)
-            json = CityMapGenerator({.seed = seed}).generate();
-
         mapSeed = seed;
+        fromJSON(CityMapGenerator({.seed = seed}).generate());
+    }
+
+    void CityMap::fromJSON(const nlohmann::json& j)
+    {
+        // The seed is the durable source of truth. Rebuild the derived map on
+        // load instead of trusting a potentially stale/incomplete snapshot.
+        mapSeed = j.at("seed").get<uint64_t>();
+        const auto json = CityMapGenerator({.seed = mapSeed}).generate();
 
         std::unordered_map<uint64_t, MapNode> loadedNodes;
         std::unordered_map<uint64_t, std::vector<Edge>> loadedRoads;
@@ -62,7 +62,6 @@ namespace dhems
         nodes = std::move(loadedNodes);
         roads = std::move(loadedRoads);
         hospitalId = hospital;
-        LOG_INFO(std::format("Loaded city map {} with {} nodes", path.string(), nodes.size()));
     }
 
     const MapNode& CityMap::hospital() const
@@ -77,9 +76,8 @@ namespace dhems
         return found->second;
     }
 
-    nlohmann::json CityMap::toJSON() const
+    void CityMap::toJSON(nlohmann::json& result) const
     {
-        nlohmann::json result;
         result["hospital"] = hospitalId;
         result["seed"] = mapSeed;
         result["nodes"] = nlohmann::json::array();
@@ -98,7 +96,6 @@ namespace dhems
                 for (const auto& edge : edges->second)
                     if (id < edge.destination) result["roads"].push_back({id, edge.destination});
         }
-        return result;
     }
 
     AmbulanceRoute CityMap::findRoute(uint64_t destinationId) const
@@ -130,6 +127,49 @@ namespace dhems
                     cost[edge.destination] = nextCost;
                     previous[edge.destination] = current;
                     frontier.push({nextCost + distance(getNode(edge.destination), destination), edge.destination});
+                }
+            }
+        }
+
+        if (!cost.contains(destinationId)) throw std::runtime_error("No road route exists to that location");
+        std::vector<MapNode> path;
+        for (uint64_t id = destinationId;; id = previous.at(id))
+        {
+            path.push_back(getNode(id));
+            if (id == hospitalId) break;
+        }
+        std::reverse(path.begin(), path.end());
+        return {std::move(path), cost.at(destinationId)};
+    }
+
+    AmbulanceRoute CityMap::findRouteDijkstra(uint64_t destinationId) const
+    {
+        getNode(destinationId);
+        using QueueItem = std::pair<double, uint64_t>;
+        std::priority_queue<QueueItem, std::vector<QueueItem>, std::greater<>> frontier;
+        std::unordered_map<uint64_t, double> cost;
+        std::unordered_map<uint64_t, uint64_t> previous;
+        std::unordered_set<uint64_t> reached;
+
+        cost[hospitalId] = 0.0;
+        frontier.push({0.0, hospitalId});
+        while (!frontier.empty())
+        {
+            const auto [currentCost, current] = frontier.top();
+            frontier.pop();
+            if (!reached.insert(current).second) continue;
+            if (current == destinationId) break;
+
+            const auto neighbors = roads.find(current);
+            if (neighbors == roads.end()) continue;
+            for (const auto& edge : neighbors->second)
+            {
+                const double nextCost = currentCost + edge.distance;
+                if (!cost.contains(edge.destination) || nextCost < cost.at(edge.destination))
+                {
+                    cost[edge.destination] = nextCost;
+                    previous[edge.destination] = current;
+                    frontier.push({nextCost, edge.destination});
                 }
             }
         }

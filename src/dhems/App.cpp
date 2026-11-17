@@ -4,6 +4,7 @@
 #include "dhems/FileSystem.hpp"
 
 #include <algorithm>
+#include <chrono>
 
 namespace dhems
 {
@@ -256,23 +257,35 @@ namespace dhems
 
     void App::serveAmbulances(httplib::Server& server)
     {
-        server.Get("/api/city-map", [this](const httplib::Request&, httplib::Response& response) {
-            response.set_content(cityMap.toJSON().dump(), "application/json");
+        auto cityMap = FileSystem::getInstance().get<CityMap>(1);
+
+        server.Get("/api/city-map", [this, cityMap](const httplib::Request&, httplib::Response& response) {
+            response.set_content(nlohmann::json(*cityMap).dump(), "application/json");
         });
 
-        server.Post("/api/ambulance", [this](const httplib::Request& request, httplib::Response& response) {
+        server.Post("/api/ambulance", [this, cityMap](const httplib::Request& request, httplib::Response& response) {
             try {
                 const auto body = nlohmann::json::parse(request.body);
                 const auto destinationId = body.at("locationId").get<uint64_t>();
-                const auto route = cityMap.findRoute(destinationId);
-                nlohmann::json routeNodes = nlohmann::json::array();
-                for (const auto& node : route.nodes)
-                    routeNodes.push_back({{"id", node.id}, {"name", node.name}, {"x", node.x}, {"y", node.y}});
+                const auto runAlgorithm = [cityMap, destinationId](auto algorithm)
+                {
+                    const auto start = std::chrono::steady_clock::now();
+                    const auto route = (cityMap->*algorithm)(destinationId);
+                    const auto elapsed = std::chrono::duration<double, std::milli>(
+                        std::chrono::steady_clock::now() - start).count();
+                    nlohmann::json routeNodes = nlohmann::json::array();
+                    for (const auto& node : route.nodes)
+                        routeNodes.push_back({{"id", node.id}, {"name", node.name}, {"x", node.x}, {"y", node.y}});
+                    return nlohmann::json{{"route", std::move(routeNodes)},
+                                          {"distance", route.distance}, {"timeMs", elapsed}};
+                };
+                const auto astar = runAlgorithm(&CityMap::findRoute);
+                const auto dijkstra = runAlgorithm(&CityMap::findRouteDijkstra);
 
                 response.set_content(nlohmann::json{
-                    {"hospital", {{"id", cityMap.hospital().id}, {"name", cityMap.hospital().name}}},
-                    {"destination", {{"id", route.nodes.back().id}, {"name", route.nodes.back().name}}},
-                    {"distance", route.distance}, {"route", std::move(routeNodes)}
+                    {"hospital", {{"id", cityMap->hospital().id}, {"name", cityMap->hospital().name}}},
+                    {"destination", {{"id", destinationId}, {"name", cityMap->getNode(destinationId).name}}},
+                    {"astar", astar}, {"dijkstra", dijkstra}
                 }.dump(), "application/json");
             } catch (const std::exception& error) { serveError(response, 400, error.what()); }
         });
@@ -285,7 +298,8 @@ namespace dhems
         const auto doctorFile = DATA_DIR / "doctors.json";
         const auto cityMapFile = DATA_DIR / "city_map.json";
 
-        cityMap.load(cityMapFile, seed);
+        auto cityMap = fileSystem.getOrCreate<CityMap>(1);
+        cityMap->generate(seed);
 
         if (std::filesystem::exists(patientFile)) 
             fileSystem.loadAll<Patient>(patientFile);
@@ -352,6 +366,8 @@ namespace dhems
         std::signal(SIGINT, previousHandler);
         fileSystem.saveAll<Patient>(patientFile);
         fileSystem.saveAll<Doctor>(doctorFile);
+        fileSystem.saveAll<CityMap>(cityMapFile);
+
         LOG_INFO("Server stopped; patient data saved");
 
         if (!listened)

@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ambulance Navigation | DHEMS</title>
-    <link rel="stylesheet" href="/ambulance/style.css">
+    <link rel="stylesheet" href="/ambulance/style.css?v=5">
+    <script src="/ambulance/ambulance.js?v=3" defer></script>
 </head>
 <body>
     <header><a href="/">DHEMS</a><span>Emergency response</span></header>
     <main>
-        <div class="intro"><p class="eyebrow">AMBULANCE DISPATCH</p><h1>Find a route</h1><p>This interactive schematic city map is a sample road network. Select a marked location to route an ambulance from DHEMS General Hospital.</p></div>
+        <div class="intro"><p class="eyebrow">AMBULANCE DISPATCH</p><h1>Find a route</h1><p>Explore a generated city street network. Select a marked location to compare routes from DHEMS General Hospital. Hover over intersections to see their neighborhood and street name.</p></div>
         <section class="dispatch panel">
             <label for="destination">Destination</label>
             <select id="destination"><option value="">Choose a location</option></select>
@@ -18,14 +19,18 @@
         </section>
         <section class="map-panel panel" aria-label="Schematic city road map">
             <svg id="map" viewBox="0 0 1000 800" role="img" aria-label="City road map. Click a location to select it."></svg>
-            <div class="legend"><span><i class="hospital-key"></i>Hospital</span><span><i class="destination-key"></i>Destination</span><span><i class="route-key"></i>Ambulance route</span></div>
+            <div class="legend"><span><i class="hospital-key"></i>Hospital</span><span><i class="destination-key"></i>Destination</span><span><i class="astar-key"></i>A* route</span><span><i class="dijkstra-key"></i>Dijkstra route</span></div>
         </section>
         <section class="panel route-panel" id="route-panel" hidden>
-            <h2>Route details</h2><p id="route-summary"></p><ol id="route-steps"></ol>
+            <h2>Route details</h2><p id="route-summary"></p>
+            <div class="algorithm-routes">
+                <div><h3>A* route</h3><ol id="astar-steps"></ol></div>
+                <div><h3>Dijkstra route</h3><ol id="dijkstra-steps"></ol></div>
+            </div>
         </section>
         <a class="back" href="/">← DHEMS home</a>
         <p id="map-seed" class="map-seed">Seed: —</p>
     </main>
-    <script src="/ambulance/ambulance.js"></script>
+    <footer class="algorithm-times" id="algorithm-times" hidden aria-live="polite"></footer>
 </body>
 </html>
