@@ -1,6 +1,10 @@
 "use strict";
 
 const PatientAPI = {
+    async list() {
+        return await (await fetch("/api/patients")).json();
+    },
+
     async register(patient) {
         const response = await fetch("/api/patients", {
             method: "POST",
@@ -31,14 +35,11 @@ const PatientAPI = {
         return await response.json();
     },
 
-    async next(type) {
-        const response = await fetch(
-            `/api/patients/next?type=${encodeURIComponent(type)}`,
-            {
-                method: "POST"
-            }
-        );
+    async next() {
+        return await (await fetch("/api/patients/next", { method: "POST" })).json();
+    },
 
-        return await response.json();
+    async erase(id) {
+        return await (await fetch(`/api/patients/${encodeURIComponent(id)}`, { method: "DELETE" })).json();
     }
 };

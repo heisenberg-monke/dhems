@@ -6,74 +6,53 @@
 
     <title>Next Patient - DHEMS</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/patient/style.css?v=6">
 </head>
 
 <body>
 
-<header>
-    <h1>Next Patient</h1>
-</header>
+<header class="page-header"><a class="brand" href="/">DHEMS</a><span>Patient services</span></header>
 
 <main>
 
-    <div class="actions">
-        <button id="appointment">
-            Next Appointment
-        </button>
-
-        <button id="admission">
-            Next Admission
-        </button>
-    </div>
-
-    <div class="card">
-        <pre id="patient"></pre>
-    </div>
+    <div class="page-title"><p class="eyebrow">ADMITTED QUEUE</p><h1>Appoint next patient</h1><p>Advance the highest-priority admitted patient to appointed status.</p></div>
+    <section class="panel"><button id="appointment">Appoint next patient</button><p id="patient" role="status" class="muted">Ready when you are.</p></section>
+    <a class="back-link" href="/patient/pm.html">← Patient management</a>
 
 </main>
 
-<script src="patient.js"></script>
+<script src="/patient/patient.js?v=6"></script>
 
 <script>
 const output = document.getElementById("patient");
 
-async function getNext(type)
+async function getNext()
 {
-    output.textContent = "Loading...";
+        output.className = "muted";
+        output.textContent = "Updating the queue…";
 
     try
     {
-        const result = await PatientAPI.next(type);
+        const result = await PatientAPI.next();
 
-        if (result.success === false)
+        if (!result.success)
         {
-            output.textContent = result.error;
+            output.className = "muted";
+            output.textContent = result.message || result.error || "All patients are appointed";
             return;
         }
 
-        output.textContent =
-            JSON.stringify(result, null, 4);
+        output.className = "success";
+        output.textContent = `${result.name} has been sent for appointment with ${result.doctorName || "No doctor available"}.`;
     }
     catch (error)
     {
+        output.className = "error";
         output.textContent = error.message;
     }
 }
 
-document
-    .getElementById("appointment")
-    .addEventListener(
-        "click",
-        () => getNext("APPOINTMENT")
-    );
-
-document
-    .getElementById("admission")
-    .addEventListener(
-        "click",
-        () => getNext("ADMISSION")
-    );
+document.getElementById("appointment").addEventListener("click", getNext);
 </script>
 
 </body>

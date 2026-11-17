@@ -1,119 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Register Patient - DHEMS</title>
-
-    <link rel="stylesheet" href="/patient/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register Patient | DHEMS</title>
+    <link rel="stylesheet" href="/patient/style.css?v=4">
 </head>
-
 <body>
+    <header class="page-header"><a class="brand" href="/">DHEMS</a><span>Patient services</span></header>
+    <main>
+        <div class="page-title">
+            <p class="eyebrow">PATIENT RECORDS</p>
+            <h1>Register patient</h1>
+            <p>Enter the patient details below. New patients begin with admitted status.</p>
+        </div>
+        <section class="panel">
+            <form id="register-form">
+                <label for="patient-name">Name</label>
+                <input id="patient-name" name="name" type="text" autocomplete="name" required>
 
-<header>
-    <h1>Register Patient</h1>
-</header>
+                <label for="patient-department">Department</label>
+                <select id="patient-department" name="department" required>
+                    <option value="0">Ortho</option>
+                    <option value="1">Gyno</option>
+                    <option value="2">Cardio</option>
+                    <option value="3">Neuro</option>
+                </select>
 
-<main>
+                <label class="check" for="patient-emergency">
+                    <input id="patient-emergency" type="checkbox" name="emergency">
+                    Emergency
+                </label>
 
-    <form id="register-form">
-
-        <label>
-            Name
-            <input type="text" name="name" required>
-        </label>
-
-        <label>
-            Phone
-            <input type="text" name="phone" required>
-        </label>
-
-        <label>
-            Address
-            <textarea name="address" required></textarea>
-        </label>
-
-        <label>
-            Blood Group
-            <input type="text" name="bloodGroup" required>
-        </label>
-
-        <label>
-            Condition
-            <input type="text" name="condition" required>
-        </label>
-
-        <label>
-            Visit Type
-            <select name="type" required>
-                <option value="APPOINTMENT">Appointment</option>
-                <option value="ADMISSION">Admission</option>
-            </select>
-        </label>
-
-        <label>
-            Priority
-            <select name="priority" required>
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-                <option value="SEVERE">Severe</option>
-            </select>
-        </label>
-
-        <label>
-            Gender
-            <select name="gender" required>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-            </select>
-        </label>
-
-        <label>
-            Age
-            <input type="number" name="age" min="0" required>
-        </label>
-
-        <button type="submit">Register Patient</button>
-
-    </form>
-
-    <p id="message"></p>
-
-</main>
-
-<script src="/patient/patient.js"></script>
-
-<script>
-document
-    .getElementById("register-form")
-    .addEventListener("submit", async event => {
-        event.preventDefault();
-
-        const form = event.target;
-        const data = new FormData(form);
-
-        const patient = Object.fromEntries(data.entries());
-
-        patient.age = Number(patient.age);
-        patient.phone = [patient.phone];
-
-        const result = await PatientAPI.register(patient);
-
-        const message = document.getElementById("message");
-
-        if (result.success) {
-            message.className = "success";
-            message.textContent =
-                `Patient registered. ID: ${result.id}`;
-        }
-        else {
-            message.className = "error";
-            message.textContent = result.error;
-        }
-    });
-</script>
-
+                <button type="submit">Register patient</button>
+            </form>
+            <p id="message" role="status" aria-live="polite"></p>
+        </section>
+        <a class="back-link" href="/patient/pm.html">← Patient management</a>
+    </main>
+    <script src="/patient/patient.js?v=4"></script>
+    <script>
+        document.getElementById("register-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const data = new FormData(form);
+            const message = document.getElementById("message");
+            const patient = {
+                name: data.get("name"),
+                department: Number(data.get("department")),
+                status: 0,
+                emergency: data.has("emergency")
+            };
+            try {
+                const result = await PatientAPI.register(patient);
+                if (!result.id) throw new Error(result.error || "Registration failed.");
+                message.className = "success";
+                message.textContent = `Patient registered. ID: ${result.id}`;
+                form.reset();
+            } catch (error) {
+                message.className = "error";
+                message.textContent = error.message;
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,55 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Patient - DHEMS</title>
-
-    <link rel="stylesheet" href="/patient/style.css">
-</head>
-
-<body>
-
-<header>
-    <h1>Patient</h1>
-</header>
-
-<main>
-
-    <div class="card">
-        <pre id="patient">Loading...</pre>
-    </div>
-
-</main>
-
-<script src="/patient/patient.js"></script>
-
-<script>
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-
-const output = document.getElementById("patient");
-
-if (!id) {
-    output.textContent = "No patient ID provided.";
-}
-else {
-    PatientAPI.get(id)
-        .then(result => {
-            if (result.success === false) {
-                output.textContent = result.error;
-                return;
-            }
-
-            output.textContent =
-                JSON.stringify(result, null, 4);
-        })
-        .catch(error => {
-            output.textContent = error.message;
-        });
-}
-</script>
-
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Patient Record | DHEMS</title><link rel="stylesheet" href="/patient/style.css?v=3"></head>
+<body><header class="page-header"><a class="brand" href="/">DHEMS</a><span>Patient services</span></header><main><div class="page-title"><p class="eyebrow">PATIENT RECORD</p><h1 id="heading">Patient details</h1><p id="feedback" role="status">Loading patient record…</p></div><section class="panel record" id="record" hidden><div><span>Patient ID</span><strong id="id"></strong></div><div><span>Name</span><strong id="name"></strong></div><div><span>Department</span><strong id="department"></strong></div><div><span>Status</span><strong id="status"></strong></div><div><span>Emergency</span><strong id="emergency"></strong></div><div><span>Assigned doctor</span><strong id="doctor"></strong></div></section><a class="back-link" href="/patient/search.html">← Search another patient</a></main><script src="/patient/patient.js"></script><script>
+const feedback = document.getElementById("feedback"); const id = new URLSearchParams(location.search).get("id");
+if (!id) feedback.textContent = "No patient ID was provided.";
+else PatientAPI.get(id).then(patient => { if (patient.error) { feedback.className = "error"; feedback.textContent = patient.error; return; } document.getElementById("id").textContent = patient.id; document.getElementById("name").textContent = patient.name; document.getElementById("department").textContent = ["Orthopedics", "Gynecology", "Cardiology", "Neurology"][patient.department] ?? "Unknown"; document.getElementById("status").textContent = ["Admitted", "Appointed", "Discharged"][patient.status] ?? "Unknown"; document.getElementById("emergency").textContent = patient.emergency ? "Yes" : "No"; document.getElementById("doctor").textContent = patient.doctorName || "Unassigned"; document.getElementById("record").hidden = false; feedback.textContent = "Record loaded."; }).catch(error => { feedback.className = "error"; feedback.textContent = error.message; });
+</script></body></html>

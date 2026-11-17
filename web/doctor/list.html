@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Doctor Directory | DHEMS</title>
+    <link rel="stylesheet" href="/patient/style.css?v=6">
+</head>
+<body>
+    <header class="page-header"><a class="brand" href="/">DHEMS</a><span>Doctor directory</span></header>
+    <main>
+        <div class="page-title"><p class="eyebrow">CARE TEAM</p><h1>Doctors</h1><p>Register clinicians and see availability and current patient assignments.</p></div>
+        <section class="panel">
+            <h2>Register doctor</h2>
+            <form id="doctor-form">
+                <label for="doctor-name">Name</label><input id="doctor-name" name="name" required>
+                <label for="doctor-department">Department</label>
+                <select id="doctor-department" name="department" required><option value="0">Ortho</option><option value="1">Gyno</option><option value="2">Cardio</option><option value="3">Neuro</option></select>
+                <button type="submit">Register doctor</button>
+            </form>
+            <p id="form-message" role="status" aria-live="polite"></p>
+        </section>
+        <section class="panel">
+            <h2>Doctor directory</h2>
+            <form id="search-form" class="inline-form"><label for="doctor-id">Find by ID</label><input id="doctor-id" name="id" type="number" min="1" required><button class="button secondary" type="submit">Search</button></form>
+            <p id="search-message" role="status"></p>
+            <p id="list-message" role="status">Loading doctors…</p>
+            <div class="table-scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Availability</th><th>Assigned patient</th><th></th></tr></thead><tbody id="doctors"></tbody></table></div>
+        </section>
+        <a class="back-link" href="/">← DHEMS home</a>
+    </main>
+    <script src="/doctor/doctor.js?v=1"></script>
+</body>
+</html>

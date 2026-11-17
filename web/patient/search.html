@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Find Patient | DHEMS</title><link rel="stylesheet" href="/patient/style.css?v=3"></head>
+<body><header class="page-header"><a class="brand" href="/">DHEMS</a><span>Patient services</span></header><main><div class="page-title"><p class="eyebrow">PATIENT RECORDS</p><h1>Find a patient</h1><p>Enter the patient ID to open their record.</p></div><section class="panel"><form id="search-form"><label for="patient-id">Patient ID</label><input id="patient-id" name="id" type="number" min="1" required placeholder="e.g. 1042"><button class="button" type="submit">View patient</button></form></section><a class="back-link" href="/patient/pm.html">← Patient management</a></main><script>
+document.getElementById("search-form").addEventListener("submit", event => { event.preventDefault(); const id = new FormData(event.target).get("id"); window.location.href = `/patient/display.html?id=${encodeURIComponent(id)}`; });
+</script></body></html>

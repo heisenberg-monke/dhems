@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Erase Patient - DHEMS</title><link rel="stylesheet" href="/patient/style.css?v=3"></head>
+<body><header class="page-header"><a class="brand" href="/">DHEMS</a><span>Patient services</span></header><main><div class="page-title"><p class="eyebrow">PATIENT RECORDS</p><h1>Erase patient</h1><p>This permanently removes the patient record.</p></div><section class="panel"><form id="erase-form"><label>Patient ID<input name="id" type="number" min="1" required></label><button type="submit">Erase patient</button></form><p id="message" role="status"></p></section><a class="back-link" href="/patient/pm.html">← Patient management</a></main>
+<script src="/patient/patient.js"></script><script>
+document.getElementById("erase-form").addEventListener("submit", async event => {
+  event.preventDefault(); const message = document.getElementById("message");
+  try { const result = await PatientAPI.erase(new FormData(event.target).get("id")); message.className = result.success ? "success" : "error"; message.textContent = result.success ? "Patient erased." : result.error || "Patient could not be erased."; }
+  catch (error) { message.className = "error"; message.textContent = error.message; }
+});
+</script></body></html>
